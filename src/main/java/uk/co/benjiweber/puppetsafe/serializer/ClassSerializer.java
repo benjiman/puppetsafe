@@ -61,6 +61,10 @@ public class ClassSerializer {
         builder.append("\t}\n");
     }
     
+    public void serializeAsDependency(File file, StringBuilder builder) {
+        builder.append("\t\tinclude => File['").append(file.target).append("'],\n");
+    }
+
     public void serialize(Package pkg, StringBuilder builder) {
         builder
             .append("\n\tpackage { ").append("'").append(pkg.name).append("':\n")
@@ -69,6 +73,9 @@ public class ClassSerializer {
         builder.append("\t}\n");
     }
     
+    public void serializeAsDependency(Package pkg, StringBuilder builder) {
+        builder.append("\t\trequire => Package['").append(pkg.name).append("'],\n");
+    }
 
     private void serializeDependencies(Set<Puppetable> dependencies, StringBuilder builder) {
         for (Puppetable puppetable : dependencies) {
@@ -76,18 +83,21 @@ public class ClassSerializer {
         }
     }
 
-    public void serializeAsDependency(File file, StringBuilder builder) {
-        builder.append("\t\tinclude => File['").append(file.target).append("'],\n");
-    }
+	public void serialize(Exec exec, StringBuilder builder) {
+        builder
+            .append("\n\texec { ").append("'").append(exec.name).append("':\n");
+        serializeDependencies(exec.dependencies, builder);
+        builder.append("\t}\n");
+	}
 
-    public void serialize(ClassDependency include, StringBuilder builder) {
-        Collection<String> names = Collections2.transform(include.getDependencies(), new ToClassNames());
-        builder.append("\n\t").append(include.getClass().getSimpleName().toLowerCase()).append(" ").append(Joiner.on(",").join(names)).append("\n");
-    }
+	public void serializeAsDependency(Exec exec, StringBuilder builder) {
+		builder.append("\t\trequire => Exec['").append(exec.name).append("'],\n");
+	}
 
-    public void serializeAsDependency(Package pkg, StringBuilder builder) {
-		    builder.append("\t\trequire => Package['").append(pkg.name).append("'],\n");
-	  }
+	public void serialize(ClassDependency include, StringBuilder builder) {
+		Collection<String> names = Collections2.transform(include.getDependencies(), new ToClassNames());
+		builder.append("\n\t").append(include.getClass().getSimpleName().toLowerCase()).append(" ").append(Joiner.on(",").join(names)).append("\n");
+	}
 
     static class ToClassNames implements Function<Class<?>, String> {
         public String apply(Class<?> aClass) {
