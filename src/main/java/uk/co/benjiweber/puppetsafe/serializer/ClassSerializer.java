@@ -1,6 +1,7 @@
 package uk.co.benjiweber.puppetsafe.serializer;
 
 import uk.co.benjiweber.puppetsafe.core.*;
+import uk.co.benjiweber.puppetsafe.core.Package;
 import uk.co.benjiweber.puppetsafe.examples.Nagios;
 
 import java.lang.reflect.Field;
@@ -52,6 +53,15 @@ public class ClassSerializer {
         serializeDependencies(file.dependencies, builder);
         builder.append("\t}\n");
     }
+    
+    public void serialize(Package pkg, StringBuilder builder) {
+        builder
+            .append("\n\tpackage { ").append("'").append(pkg.name).append("':\n")
+            .append("\t\tensure => '").append(pkg.ensure).append("',\n");
+        serializeDependencies(pkg.dependencies, builder);
+        builder.append("\t}\n");
+    }
+    
 
     private void serializeDependencies(Set<Puppetable> dependencies, StringBuilder builder) {
         for (Puppetable puppetable : dependencies) {
@@ -62,4 +72,8 @@ public class ClassSerializer {
     public void serializeAsDependency(File file, StringBuilder builder) {
         builder.append("\t\trequire => File['").append(file.target).append("'],\n");
     }
+
+	public void serializeAsDependency(Package pkg, StringBuilder builder) {
+		 builder.append("\t\trequire => Package['").append(pkg.name).append("'],\n");
+	}
 }
