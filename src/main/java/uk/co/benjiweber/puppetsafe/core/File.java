@@ -3,9 +3,9 @@ package uk.co.benjiweber.puppetsafe.core;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import uk.co.benjiweber.puppetsafe.builder.ABSENT;
+import uk.co.benjiweber.puppetsafe.builder.PRESENT;
 import uk.co.benjiweber.puppetsafe.serializer.ClassSerializer;
-import uk.co.benjiweber.puppetsafe.uk.co.benjiweber.puppetsafe.builder.ABSENT;
-import uk.co.benjiweber.puppetsafe.uk.co.benjiweber.puppetsafe.builder.PRESENT;
 
 public class File implements Puppetable {
 
