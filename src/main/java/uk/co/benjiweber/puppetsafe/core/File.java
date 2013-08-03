@@ -1,11 +1,11 @@
 package uk.co.benjiweber.puppetsafe.core;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import uk.co.benjiweber.puppetsafe.serializer.ClassSerializer;
 import uk.co.benjiweber.puppetsafe.uk.co.benjiweber.puppetsafe.builder.ABSENT;
 import uk.co.benjiweber.puppetsafe.uk.co.benjiweber.puppetsafe.builder.PRESENT;
-
-import javax.swing.*;
-import java.util.*;
 
 public class File implements Puppetable {
 
@@ -14,12 +14,10 @@ public class File implements Puppetable {
     public final Ensure ensure;
     public final Set<Puppetable> dependencies;
 
-    @Override
     public void serialize(ClassSerializer serializer, StringBuilder builder) {
         serializer.serialize(this, builder);
     }
 
-    @Override
     public void serializeAsDependency(ClassSerializer serializer, StringBuilder builder) {
         serializer.serializeAsDependency(this, builder);
     }
