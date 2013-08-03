@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 import uk.co.benjiweber.puppetsafe.core.*;
+import uk.co.benjiweber.puppetsafe.core.Package;
 import uk.co.benjiweber.puppetsafe.examples.Nagios;
 
 import java.lang.Class;
@@ -59,6 +60,15 @@ public class ClassSerializer {
         serializeDependencies(file.dependencies, builder);
         builder.append("\t}\n");
     }
+    
+    public void serialize(Package pkg, StringBuilder builder) {
+        builder
+            .append("\n\tpackage { ").append("'").append(pkg.name).append("':\n")
+            .append("\t\tensure => '").append(pkg.ensure).append("',\n");
+        serializeDependencies(pkg.dependencies, builder);
+        builder.append("\t}\n");
+    }
+    
 
     private void serializeDependencies(Set<Puppetable> dependencies, StringBuilder builder) {
         for (Puppetable puppetable : dependencies) {
@@ -74,6 +84,10 @@ public class ClassSerializer {
         Collection<String> names = Collections2.transform(include.getDependencies(), new ToClassNames());
         builder.append("\n\t").append(include.getClass().getSimpleName().toLowerCase()).append(" ").append(Joiner.on(",").join(names)).append("\n");
     }
+
+    public void serializeAsDependency(Package pkg, StringBuilder builder) {
+		    builder.append("\t\trequire => Package['").append(pkg.name).append("'],\n");
+	  }
 
     static class ToClassNames implements Function<Class<?>, String> {
         public String apply(Class<?> aClass) {
