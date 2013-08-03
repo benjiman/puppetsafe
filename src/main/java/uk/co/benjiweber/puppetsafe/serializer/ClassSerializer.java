@@ -1,9 +1,14 @@
 package uk.co.benjiweber.puppetsafe.serializer;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Collections2;
 import uk.co.benjiweber.puppetsafe.core.*;
 import uk.co.benjiweber.puppetsafe.examples.Nagios;
 
+import java.lang.Class;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Set;
 
 public class ClassSerializer {
@@ -24,15 +29,17 @@ public class ClassSerializer {
         for (Field field : puppetClass.getDeclaredFields()) {
             if (Puppetable.class.isAssignableFrom(field.getType())) {
                 field.setAccessible(true);
-                serializePuppetable(field, builder);
+                serializePuppetable(puppetClass, field, builder);
             }
         }
     }
 
-    public void serializePuppetable(Field field, StringBuilder builder) {
+    public void serializePuppetable(java.lang.Class<? extends uk.co.benjiweber.puppetsafe.core.Class> puppetClass, Field field, StringBuilder builder) {
         try {
             Puppetable puppetable = (Puppetable) field.get(null);
             puppetable.serialize(this, builder);
+        } catch (NullPointerException e) {
+            throw new NonStaticDeclarationException(puppetClass, field);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -60,6 +67,18 @@ public class ClassSerializer {
     }
 
     public void serializeAsDependency(File file, StringBuilder builder) {
-        builder.append("\t\trequire => File['").append(file.target).append("'],\n");
+        builder.append("\t\tinclude => File['").append(file.target).append("'],\n");
     }
+
+    public void serialize(ClassDependency include, StringBuilder builder) {
+        Collection<String> names = Collections2.transform(include.getDependencies(), new ToClassNames());
+        builder.append("\n\t").append(include.getClass().getSimpleName().toLowerCase()).append(" ").append(Joiner.on(",").join(names)).append("\n");
+    }
+
+    static class ToClassNames implements Function<Class<?>, String> {
+        public String apply(Class<?> aClass) {
+            return aClass.getSimpleName().toLowerCase().replaceAll("\\$\\$","::");
+        }
+    }
+
 }

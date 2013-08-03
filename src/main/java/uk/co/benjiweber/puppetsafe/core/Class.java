@@ -1,4 +1,5 @@
 package uk.co.benjiweber.puppetsafe.core;
 
-public interface Class {
-}
+import uk.co.benjiweber.puppetsafe.serializer.ClassSerializer;
+
+public interface Class {}

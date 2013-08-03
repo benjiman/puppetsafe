@@ -4,7 +4,6 @@ import uk.co.benjiweber.puppetsafe.serializer.ClassSerializer;
 import uk.co.benjiweber.puppetsafe.uk.co.benjiweber.puppetsafe.builder.ABSENT;
 import uk.co.benjiweber.puppetsafe.uk.co.benjiweber.puppetsafe.builder.PRESENT;
 
-import javax.swing.*;
 import java.util.*;
 
 public class File implements Puppetable {

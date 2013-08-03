@@ -11,7 +11,12 @@ public class NagiosExampleSerializationTest {
 
     @Test
     public void ensureExampleSerializedAsExpected() {
+        ;
          assertEquals("class Nagios {\n" +
+                 "\n" +
+                 "\trequire base,nrpe\n" +
+                 "\n" +
+                 "\tinclude nagios::common\n" +
                  "\n" +
                  "\tfile { '/etc/nagios/':\n" +
                  "\t\tpath => '/etc/nagios/',\n" +
@@ -22,9 +27,9 @@ public class NagiosExampleSerializationTest {
                  "\t\tpath => '/etc/nagios/nagios.cfg',\n" +
                  "\t\tensure => 'file',\n" +
                  "\t\tsource => 'nagios.cfg',\n" +
-                 "\t\trequire => File['/etc/nagios/'],\n" +
+                 "\t\tinclude => File['/etc/nagios/'],\n" +
                  "\t}\n" +
                  "\n" +
-         "}", serializer.serialize(Nagios.class));
+                 "}", serializer.serialize(Nagios.class));
     }
 }
