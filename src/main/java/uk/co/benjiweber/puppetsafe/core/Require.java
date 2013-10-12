@@ -24,7 +24,7 @@ public class Require implements Puppetable, ClassDependency {
     }
 
     @Override
-    public void serializeAsDependency(ClassSerializer serializer, StringBuilder builder) {
+    public void serializeAs(MetaParameters.Type type, ClassSerializer serializer, StringBuilder builder) {
 
     }
 

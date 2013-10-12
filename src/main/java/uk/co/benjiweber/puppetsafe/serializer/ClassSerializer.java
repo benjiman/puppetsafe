@@ -10,7 +10,6 @@ import uk.co.benjiweber.puppetsafe.examples.Nagios;
 import java.lang.Class;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.Set;
 
 public class ClassSerializer {
 
@@ -57,41 +56,53 @@ public class ClassSerializer {
             .append("\t\tensure => '").append(file.ensure).append("',\n");
         if (file.source != null)
             builder.append("\t\tsource => '").append(file.source).append("',\n");
-        serializeDependencies(file.dependencies, builder);
+        serializeDependencies(file.metaParameters, builder);
         builder.append("\t}\n");
     }
     
-    public void serializeAsDependency(File file, StringBuilder builder) {
-        builder.append("\t\tinclude => File['").append(file.target).append("'],\n");
-    }
+
 
     public void serialize(Package pkg, StringBuilder builder) {
         builder
             .append("\n\tpackage { ").append("'").append(pkg.name).append("':\n")
             .append("\t\tensure => '").append(pkg.ensure).append("',\n");
-        serializeDependencies(pkg.dependencies, builder);
+        serializeDependencies(pkg.metaParameters, builder);
         builder.append("\t}\n");
     }
-    
-    public void serializeAsDependency(Package pkg, StringBuilder builder) {
-        builder.append("\t\trequire => Package['").append(pkg.name).append("'],\n");
+
+    public void serializeAs(MetaParameters.Type type, File file, StringBuilder builder) {
+        builder.append("\t\t").append(type).append(" => File['").append(file.target).append("'],\n");
     }
 
-    private void serializeDependencies(Set<Puppetable> dependencies, StringBuilder builder) {
-        for (Puppetable puppetable : dependencies) {
-            puppetable.serializeAsDependency(this, builder);
+    public void serializeAs(MetaParameters.Type type, Package pkg, StringBuilder builder) {
+        builder.append("\t\t").append(type).append(" => Package['").append(pkg.name).append("'],\n");
+    }
+
+
+    public void serializeAs(MetaParameters.Type type, Exec exec, StringBuilder builder) {
+        builder.append("\t\t").append(type).append(" => Exec['").append(exec.name).append("'],\n");
+    }
+
+    private void serializeDependencies(MetaParameters dependencies, StringBuilder builder) {
+        for (Puppetable puppetable : dependencies.befores()) {
+            puppetable.serializeAs(MetaParameters.Type.Before, this, builder);
+        }
+        for (Puppetable puppetable : dependencies.requires()) {
+            puppetable.serializeAs(MetaParameters.Type.Require, this, builder);
+        }
+        for (Puppetable puppetable : dependencies.notifies()) {
+            puppetable.serializeAs(MetaParameters.Type.Notify, this, builder);
+        }
+        for (Puppetable puppetable : dependencies.subscribes()) {
+            puppetable.serializeAs(MetaParameters.Type.Subscribe, this, builder);
         }
     }
 
 	public void serialize(Exec exec, StringBuilder builder) {
         builder
             .append("\n\texec { ").append("'").append(exec.name).append("':\n");
-        serializeDependencies(exec.dependencies, builder);
+        serializeDependencies(exec.metaParameters, builder);
         builder.append("\t}\n");
-	}
-
-	public void serializeAsDependency(Exec exec, StringBuilder builder) {
-		builder.append("\t\trequire => Exec['").append(exec.name).append("'],\n");
 	}
 
 	public void serialize(ClassDependency include, StringBuilder builder) {

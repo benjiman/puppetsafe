@@ -1,8 +1,5 @@
 package uk.co.benjiweber.puppetsafe.core;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import uk.co.benjiweber.puppetsafe.builder.ABSENT;
 import uk.co.benjiweber.puppetsafe.builder.PRESENT;
 import uk.co.benjiweber.puppetsafe.core.Package.Ensure;
@@ -10,38 +7,38 @@ import uk.co.benjiweber.puppetsafe.serializer.ClassSerializer;
 
 public class Exec implements Puppetable{
 	public final String name;
-    public final Set<Puppetable> dependencies;
+    public final MetaParameters metaParameters;
 
     public void serialize(ClassSerializer serializer, StringBuilder builder) {
         serializer.serialize(this, builder);
     }
 
-    public void serializeAsDependency(ClassSerializer serializer, StringBuilder builder) {
-        serializer.serializeAsDependency(this, builder);
+    public void serializeAs(MetaParameters.Type type, ClassSerializer serializer, StringBuilder builder) {
+        serializer.serializeAs(type, this, builder);
     }
 
     public Exec(ExecBuilder<PRESENT> builder) {
-        this(builder.name, builder.dependencies);
+        this(builder.name, builder.metaParameters);
     }
 
-    private Exec(String name, Set<Puppetable> dependencies) {
+    private Exec(String name, MetaParameters metaParameters) {
         this.name = name;
-        this.dependencies = dependencies;
+        this.metaParameters = metaParameters;
     }
 
     public static class ExecBuilder<NAME> {
         String name;
-        private Set<Puppetable> dependencies = new LinkedHashSet<Puppetable>();
+        private MetaParameters metaParameters = new MetaParameters();
 
         public ExecBuilder() {}
 
-        public ExecBuilder(String name, Set<Puppetable> dependencies) {
+        public ExecBuilder(String name, MetaParameters metaParameters) {
             this.name = name;
-            this.dependencies = dependencies;
+            this.metaParameters = metaParameters;
         }
 
         public ExecBuilder<PRESENT> name(String name) {
-            return new ExecBuilder<PRESENT>(name, this.dependencies);
+            return new ExecBuilder<PRESENT>(name, this.metaParameters);
         }
 
         public static ExecBuilder<ABSENT> with() {
@@ -49,13 +46,11 @@ public class Exec implements Puppetable{
         }
 
         public ExecBuilder<NAME> ensure(Ensure ensure) {
-            return new ExecBuilder<NAME>(this.name, this.dependencies);
+            return new ExecBuilder<NAME>(this.name, this.metaParameters);
         }
 
         public ExecBuilder<NAME> requires(Puppetable puppetable) {
-            LinkedHashSet<Puppetable> newDependencies = new LinkedHashSet<Puppetable>(dependencies);
-            newDependencies.add(puppetable);
-            return new ExecBuilder<NAME>(this.name, newDependencies);
+            return new ExecBuilder<NAME>(this.name, metaParameters.plusRequire(puppetable));
         }
 
     }
