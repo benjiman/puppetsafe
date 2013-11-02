@@ -93,9 +93,20 @@ public class ClassSerializer {
 
     public void serialize(Package pkg, StringBuilder builder) {
         builder
-            .append("\n").append(indent()).append("package { ").append("'").append(pkg.getIdentifier()).append("':\n")
-            .append(indentMore()).append("name => '").append(pkg.name).append("',\n")
+            .append("\n").append(indent()).append("package { ").append("'").append(pkg.getIdentifier()).append("':\n");
+        builder.append(indentMore()).append("name => '").append(pkg.name).append("',\n");
+        if(pkg.source != null) builder.append(indent()).append("source => '").append(pkg.source).append("',\n");
+        builder
             .append(indent()).append("ensure => '").append(pkg.ensure).append("',\n");
+        if(pkg.adminfile != null) builder.append(indent()).append("adminfile => '").append(pkg.adminfile).append("',\n");
+        if(pkg.allowcdrom != null) builder.append(indent()).append("allowcdrom => ").append(pkg.allowcdrom).append(",\n");
+        if(pkg.configfiles != null) builder.append(indent()).append("configfiles => '").append(pkg.configfiles).append("',\n");
+        if(pkg.flavour != null) builder.append(indent()).append("flavor => '").append(pkg.flavour).append("',\n");
+        if(pkg.provider != null) builder.append(indent()).append("provider => '").append(pkg.provider).append("',\n");
+        if(pkg.responseFile != null) builder.append(indent()).append("responseFile => '").append(pkg.responseFile).append("',\n");
+        if(pkg.install_options != null) builder.append(indent()).append("install_options => [").append(Joiner.on(",").join(pkg.install_options)).append("],\n");
+        if(pkg.install_options != null) builder.append(indent()).append("uninstall_options => [").append(Joiner.on(",").join(pkg.uninstall_options)).append("],\n");
+
         serializeDependencies(pkg.metaParameters, builder);
         builder.append(indentLess()).append("}\n");
     }
