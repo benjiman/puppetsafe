@@ -6,13 +6,25 @@ import java.util.Set;
 import uk.co.benjiweber.puppetsafe.builder.ABSENT;
 import uk.co.benjiweber.puppetsafe.builder.PRESENT;
 import uk.co.benjiweber.puppetsafe.serializer.ClassSerializer;
+import uk.co.benjiweber.puppetsafe.util.ListUtils;
 
-public class File implements Puppetable {
+public class File implements Puppetable, Identifiable {
 
     public final String source;
     public final String target;
     public final Ensure ensure;
     public final MetaParameters metaParameters;
+    private String identifier;
+
+    @Override
+    public String getIdentifier() {
+        return ListUtils.coalesce(this.identifier, target);
+    }
+
+    @Override
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
     public void serialize(ClassSerializer serializer, StringBuilder builder) {
         serializer.serialize(this, builder);

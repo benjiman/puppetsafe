@@ -6,12 +6,16 @@ import com.google.common.collect.Collections2;
 import uk.co.benjiweber.puppetsafe.core.*;
 import uk.co.benjiweber.puppetsafe.core.Package;
 import uk.co.benjiweber.puppetsafe.examples.Nagios;
+import uk.co.benjiweber.puppetsafe.facts.Conditional;
+import uk.co.benjiweber.puppetsafe.facts.RuntimeSelected;
 
 import java.lang.Class;
 import java.lang.reflect.Field;
 import java.util.Collection;
 
 public class ClassSerializer {
+
+    private int indentLevel = 1;
 
     public String serialize(java.lang.Class<? extends uk.co.benjiweber.puppetsafe.core.Class> puppetClass) {
         StringBuilder builder = new StringBuilder();
@@ -51,36 +55,53 @@ public class ClassSerializer {
 
     public void serialize(File file, StringBuilder builder) {
         builder
-            .append("\n\tfile { ").append("'").append(file.target).append("':\n")
-            .append("\t\tpath => '").append(file.target).append("',\n")
-            .append("\t\tensure => '").append(file.ensure).append("',\n");
+            .append("\n").append(indent()).append("file { ").append("'").append(file.target).append("':\n")
+            .append(indentMore()).append("path => '").append(file.target).append("',\n")
+            .append(indent()).append("ensure => '").append(file.ensure).append("',\n");
         if (file.source != null)
-            builder.append("\t\tsource => '").append(file.source).append("',\n");
+            builder.append(indent()).append("source => '").append(file.source).append("',\n");
         serializeDependencies(file.metaParameters, builder);
-        builder.append("\t}\n");
+        builder.append(indentLess()).append("}\n");
     }
-    
+
+    public void serialize(RuntimeSelected<? extends Puppetable> runtimeSelected, StringBuilder stringBuilder) {
+        for (Conditional conditional : runtimeSelected.conditionals) {
+            stringBuilder.append("\n").append(indent()).append("if (").append(conditional.fact).append(" ~= /").append(conditional.regex).append("/ ) {\n ");
+            indentMore();
+            conditional.puppetable.serialize(this, stringBuilder);
+            indentLess();
+            stringBuilder.append("\n").append(indent()).append("}\n");
+        }
+    }
+
+    private String indentMore() {
+        indentLevel++;
+        return indent();
+    }
+
+    private String indent() {
+        StringBuilder indenter = new StringBuilder();
+        for (int i = 0; i < indentLevel; i++) indenter.append("\t");
+        return indenter.toString();
+    }
+
+    private String indentLess() {
+        indentLevel--;
+        return indent();
+    }
 
 
     public void serialize(Package pkg, StringBuilder builder) {
         builder
-            .append("\n\tpackage { ").append("'").append(pkg.name).append("':\n")
-            .append("\t\tensure => '").append(pkg.ensure).append("',\n");
+            .append("\n").append(indent()).append("package { ").append("'").append(pkg.getIdentifier()).append("':\n")
+            .append(indentMore()).append("name => '").append(pkg.name).append("',\n")
+            .append(indent()).append("ensure => '").append(pkg.ensure).append("',\n");
         serializeDependencies(pkg.metaParameters, builder);
-        builder.append("\t}\n");
+        builder.append(indentLess()).append("}\n");
     }
 
-    public void serializeAs(MetaParameters.Type type, File file, StringBuilder builder) {
-        builder.append("\t\t").append(type).append(" => File['").append(file.target).append("'],\n");
-    }
-
-    public void serializeAs(MetaParameters.Type type, Package pkg, StringBuilder builder) {
-        builder.append("\t\t").append(type).append(" => Package['").append(pkg.name).append("'],\n");
-    }
-
-
-    public void serializeAs(MetaParameters.Type type, Exec exec, StringBuilder builder) {
-        builder.append("\t\t").append(type).append(" => Exec['").append(exec.name).append("'],\n");
+    public void serializeAs(MetaParameters.Type type, Identifiable identifiable, StringBuilder builder) {
+        builder.append(indent()).append(type).append(" => ").append(identifiable.getClass().getSimpleName()).append("['").append(identifiable.getIdentifier()).append("'],\n");
     }
 
     private void serializeDependencies(MetaParameters dependencies, StringBuilder builder) {

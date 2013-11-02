@@ -15,15 +15,17 @@ public class MuninExampleSerializationTest {
          assertEquals("class Munin {\n" +
                  "\n" +
                  "\tpackage { 'munin':\n" +
+                 "\t\tname => 'munin',\n" +
                  "\t\tensure => 'installed',\n" +
                  "\t}\n" +
                  "\n" +
                  "\tpackage { 'munin-common':\n" +
+                 "\t\tname => 'munin-common',\n" +
                  "\t\tensure => 'latest',\n" +
                  "\t\trequire => Package['munin'],\n" +
                  "\t}\n" +
                  "\n" +
-         "}", serializer.serialize(Munin.class));
+                 "}", serializer.serialize(Munin.class));
     }
 	
 }

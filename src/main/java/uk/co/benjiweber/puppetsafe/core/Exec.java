@@ -4,10 +4,22 @@ import uk.co.benjiweber.puppetsafe.builder.ABSENT;
 import uk.co.benjiweber.puppetsafe.builder.PRESENT;
 import uk.co.benjiweber.puppetsafe.core.Package.Ensure;
 import uk.co.benjiweber.puppetsafe.serializer.ClassSerializer;
+import uk.co.benjiweber.puppetsafe.util.ListUtils;
 
-public class Exec implements Puppetable{
+public class Exec implements Puppetable, Identifiable {
 	public final String name;
     public final MetaParameters metaParameters;
+    private String identifier;
+
+    @Override
+    public String getIdentifier() {
+        return ListUtils.coalesce(identifier, name);
+    }
+
+    @Override
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
     public void serialize(ClassSerializer serializer, StringBuilder builder) {
         serializer.serialize(this, builder);
