@@ -1,6 +1,5 @@
 package uk.co.benjiweber.puppetsafe.core;
 
-import uk.co.benjiweber.puppetsafe.core.Class;
 import uk.co.benjiweber.puppetsafe.serializer.ClassSerializer;
 
 import java.util.Arrays;
@@ -11,7 +10,7 @@ public class Require implements Puppetable, ClassDependency {
     public final Set<java.lang.Class<? extends Class>> puppetClasses;
 
     public Require(java.lang.Class<? extends uk.co.benjiweber.puppetsafe.core.Class>... puppetClasses) {
-        this.puppetClasses = new LinkedHashSet<java.lang.Class<? extends Class>>(Arrays.asList(puppetClasses));
+        this.puppetClasses = new LinkedHashSet<>(Arrays.asList(puppetClasses));
     }
 
     public static Require require(java.lang.Class<? extends uk.co.benjiweber.puppetsafe.core.Class>... puppetClasses) {

@@ -19,7 +19,7 @@ public class MuninExampleSerializationTest {
                  "\t\tensure => 'installed',\n" +
                  "\t}\n" +
                  "\n" +
-                 "\tpackage { 'munin-common':\n" +
+                 "\tpackage { 'muninCommon':\n" +
                  "\t\tname => 'munin-common',\n" +
                  "\t\tensure => 'latest',\n" +
                  "\t\trequire => Package['munin'],\n" +

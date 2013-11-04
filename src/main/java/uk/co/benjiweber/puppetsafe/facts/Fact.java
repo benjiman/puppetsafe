@@ -4,8 +4,6 @@ import uk.co.benjiweber.puppetsafe.core.Identifiable;
 import uk.co.benjiweber.puppetsafe.core.Puppetable;
 import uk.co.benjiweber.puppetsafe.util.SelfNaming;
 
-import java.util.regex.Pattern;
-
 public class Fact extends SelfNaming {
 
     @Override public boolean equals(Object other) {

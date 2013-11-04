@@ -4,14 +4,14 @@ import com.google.common.collect.Sets;
 import uk.co.benjiweber.puppetsafe.builder.ABSENT;
 import uk.co.benjiweber.puppetsafe.builder.PRESENT;
 import uk.co.benjiweber.puppetsafe.serializer.ClassSerializer;
-import uk.co.benjiweber.puppetsafe.util.ListUtils;
+import uk.co.benjiweber.puppetsafe.util.SelfNaming;
 
 import java.util.Arrays;
 import java.util.Set;
 
 import static uk.co.benjiweber.puppetsafe.util.ListUtils.coalesce;
 
-public class Package implements Puppetable, Identifiable {
+public class Package extends SelfNaming implements Puppetable, Identifiable {
 
 	public final String name;
     private String identifier;
@@ -111,7 +111,7 @@ public class Package implements Puppetable, Identifiable {
 
     @Override
     public String getIdentifier() {
-        return identifier;
+        return identifier == null ? getName() : identifier;
     }
 
     @Override
@@ -134,7 +134,6 @@ public class Package implements Puppetable, Identifiable {
 
     private Package(String name, String identifier, String adminfile, Boolean allowcdrom, ConfigFileMode configfiles, String flavour, Set<PackageOption> install_options, Set<PackageOption> uninstall_options, Provider provider, String responseFile, String source, Ensure ensure, MetaParameters metaParameters) {
         this.name = name;
-        this.identifier = identifier;
         this.adminfile = adminfile;
         this.allowcdrom = allowcdrom;
         this.configfiles = configfiles;
@@ -144,7 +143,7 @@ public class Package implements Puppetable, Identifiable {
         this.provider = provider;
         this.responseFile = responseFile;
         this.source = source;
-        this.identifier = coalesce(identifier, name);
+        this.identifier = identifier;
         this.ensure = ensure;
         this.metaParameters = metaParameters;
     }

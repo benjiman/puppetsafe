@@ -1,9 +1,8 @@
 package uk.co.benjiweber.puppetsafe.facts;
 
 import com.google.common.collect.Sets;
-import uk.co.benjiweber.puppetsafe.builder.PRESENT;
-import uk.co.benjiweber.puppetsafe.core.*;
-import uk.co.benjiweber.puppetsafe.core.Package;
+import uk.co.benjiweber.puppetsafe.core.Identifiable;
+import uk.co.benjiweber.puppetsafe.core.Puppetable;
 
 import java.util.Set;
 import java.util.regex.Pattern;

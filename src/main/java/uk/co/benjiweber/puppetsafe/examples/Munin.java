@@ -1,10 +1,12 @@
 package uk.co.benjiweber.puppetsafe.examples;
 
-import static uk.co.benjiweber.puppetsafe.core.Package.pkg;
-import static uk.co.benjiweber.puppetsafe.core.Package.Ensure.*;
-import static uk.co.benjiweber.puppetsafe.core.Package.PackageBuilder.with;
 import uk.co.benjiweber.puppetsafe.core.Class;
 import uk.co.benjiweber.puppetsafe.core.Package;
+
+import static uk.co.benjiweber.puppetsafe.core.Package.Ensure.installed;
+import static uk.co.benjiweber.puppetsafe.core.Package.Ensure.latest;
+import static uk.co.benjiweber.puppetsafe.core.Package.PackageBuilder.with;
+import static uk.co.benjiweber.puppetsafe.core.Package.pkg;
 
 public class Munin implements Class {
 
@@ -20,5 +22,5 @@ public class Munin implements Class {
 				.ensure(latest)
 				.requires(munin)
 			);
-	
+
 }

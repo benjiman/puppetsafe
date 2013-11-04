@@ -1,13 +1,9 @@
 package uk.co.benjiweber.puppetsafe.examples;
 
 import uk.co.benjiweber.puppetsafe.core.Class;
-import uk.co.benjiweber.puppetsafe.core.File;
+import uk.co.benjiweber.puppetsafe.core.*;
 import uk.co.benjiweber.puppetsafe.core.Package;
-import uk.co.benjiweber.puppetsafe.core.Include;
-import uk.co.benjiweber.puppetsafe.core.Require;
-import uk.co.benjiweber.puppetsafe.facts.Conditional;
 import uk.co.benjiweber.puppetsafe.facts.RuntimeSelected;
-import uk.co.benjiweber.puppetsafe.facts.StandardFacts;
 
 import java.util.regex.Pattern;
 
