@@ -55,7 +55,7 @@ public class ClassSerializer {
 
     public void serialize(File file, StringBuilder builder) {
         builder
-            .append("\n").append(indent()).append("file { ").append("'").append(file.target).append("':\n")
+            .append("\n").append(indent()).append("file { ").append("'").append(file.getIdentifier()).append("':\n")
             .append(indentMore()).append("path => '").append(file.target).append("',\n")
             .append(indent()).append("ensure => '").append(file.ensure).append("',\n");
         if (file.source != null)

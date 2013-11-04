@@ -4,8 +4,9 @@ import uk.co.benjiweber.puppetsafe.builder.ABSENT;
 import uk.co.benjiweber.puppetsafe.builder.PRESENT;
 import uk.co.benjiweber.puppetsafe.serializer.ClassSerializer;
 import uk.co.benjiweber.puppetsafe.util.ListUtils;
+import uk.co.benjiweber.puppetsafe.util.SelfNaming;
 
-public class File implements Puppetable, Identifiable {
+public class File extends SelfNaming implements Puppetable, Identifiable {
 
     public final String source;
     public final String target;
@@ -15,7 +16,7 @@ public class File implements Puppetable, Identifiable {
 
     @Override
     public String getIdentifier() {
-        return ListUtils.coalesce(this.identifier, target);
+        return ListUtils.coalesce(this.identifier, getName());
     }
 
     @Override
